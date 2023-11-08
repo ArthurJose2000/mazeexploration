@@ -37,6 +37,12 @@ class MyAlgorithm:
         agents_search = []
         pionner_steps = sys.maxsize
         totalSteps = 0
+
+        #strange steps
+        pioneer_after_interval1 = 0
+        pioneer_after_interval2 = 0
+        steps_agents_using_interval2 = 0
+
         for i in range(0, self.numOfAgents):
             start = i * division
             end = (i + 1) * division
@@ -49,7 +55,13 @@ class MyAlgorithm:
 
             # Test
             #mySearch, effective_path, explored_cells, foundTheGoal = self.run_single_agent(agentInterval, i)
-            mySearch, effective_path, explored_cells, foundTheGoal = self.run_single_agent(i)
+            mySearch, effective_path, explored_cells, foundTheGoal, steps_after_interval1, steps_after_interval2 = self.run_single_agent(i)
+
+            if steps_after_interval1 != 0 and steps_after_interval2 == 0:
+                steps_agents_using_interval2 += steps_after_interval1
+
+            #print("steps_after_interval1: ", steps_after_interval1)
+            #print("steps_after_interval2: ", steps_after_interval2)
 
             self.concatenate_new_elements(explored, explored_cells)
 
@@ -72,7 +84,10 @@ class MyAlgorithm:
 
             # Get the number of the steps of the pionner
             if foundTheGoal == True:
-                pionner_steps = agent_steps if pionner_steps > agent_steps else pionner_steps
+                if pionner_steps > agent_steps:
+                    pionner_steps = agent_steps
+                    pioneer_after_interval1 = steps_after_interval1
+                    pioneer_after_interval2 = steps_after_interval2
 
         if pionner_steps == sys.maxsize:
             print("ERRO")
@@ -99,7 +114,10 @@ class MyAlgorithm:
 
         self.maze.run() """
 
-        return totalSteps, pionner_steps, fraction, fraction_pionner
+        #print("pioneer_after_interval1: ", pioneer_after_interval1)
+        #print("pioneer_after_interval2: ", pioneer_after_interval2)
+
+        return totalSteps, pionner_steps, fraction, fraction_pionner, pioneer_after_interval1, pioneer_after_interval2, steps_agents_using_interval2
 
     # Run the algorithm for a single agent
     def run_single_agent(self, agentIndex):
@@ -116,7 +134,17 @@ class MyAlgorithm:
         # currently the algorithm has a stop condition
         foundTheGoal = False
 
+
+        steps_after_interval1 = 0
+        steps_after_interval2 = 0
+
         while True:
+
+            if self.filledInterval[agentIndex] == True:
+                steps_after_interval1 += 1
+
+            if self.filledInterval2[agentIndex] == True:
+                steps_after_interval2 += 1
 
             if currCell==self.maze._goal:
                 mySearch.append(currCell)
@@ -180,7 +208,7 @@ class MyAlgorithm:
             elif childCellPoint=='W':
                 currCell = (currCell[0],currCell[1]-1)
 
-        return mySearch, effective_path, explored, foundTheGoal
+        return mySearch, effective_path, explored, foundTheGoal, steps_after_interval1, steps_after_interval2
 
     # Return children's cardinal points in preferential order 
     def getChildrenPoints(self, cellCoordinate, cellPoints, parent, explored):
@@ -733,6 +761,12 @@ steps_from_first_to_last_row = []
 
 # Only for my algorithm
 fraction_pionner_row = []
+pioneer_after_interval1_row = []
+pioneer_after_interval2_row = []
+fraction_pioneer_after_interval1_row = []
+fraction_pioneer_after_interval2_row = []
+fraction_pioneer_in_interval2_row = []
+steps_agents_using_interval2_row = []
 
 for i in range(1, 41):
 
@@ -744,6 +778,14 @@ for i in range(1, 41):
     fractionCount = 0
     iterations = 250
     steps_array = []
+
+    # Strange steps
+    pioneer_stepsCount_after_interval1 = 0
+    pioneer_stepsCount_after_interval2 = 0
+    after_interval_1_count = 0
+    pioneer_interval2_count = 0
+    after_interval_2_count = 0
+    steps_agents_using_interval2_count = 0
 
     # Only for Tarry's algorithm
     steps_from_first_to_lastCount = 0
@@ -763,7 +805,17 @@ for i in range(1, 41):
         #m.CreateMaze(loopPercent=0,theme='light', saveMaze=True)
 
         myAlgorithm = MyAlgorithm(m, numOfAgents, colorList, start=None)
-        steps, pionner_steps, fraction, fraction_pionner = myAlgorithm.run()
+        steps, pionner_steps, fraction, fraction_pionner, pioneer_after_interval1, pioneer_after_interval2, steps_agents_using_interval2 = myAlgorithm.run()
+
+        if pioneer_after_interval1 != 0:
+            after_interval_1_count += 1
+
+        if pioneer_after_interval2 != 0:
+            after_interval_2_count =+ 1
+
+        if pioneer_after_interval1 != 0 and pioneer_after_interval2 == 0:
+            pioneer_interval2_count += 1
+
 
         """ tarryGeneralization = TarryGeneralization(m, numOfAgents, colorList, start=None)
         steps, pionner_steps, fraction, last_steps = tarryGeneralization.run() """
@@ -782,6 +834,9 @@ for i in range(1, 41):
 
         # Only for my algorithm
         fraction_pionner_count += fraction_pionner
+        pioneer_stepsCount_after_interval1 += pioneer_after_interval1 # Strange steps
+        pioneer_stepsCount_after_interval2 += pioneer_after_interval2 # Strange steps
+        steps_agents_using_interval2_count += steps_agents_using_interval2 # Strange steps
 
     # Only for Tarry's algorithm
     """ averageOfStepsFromFirstToLast = steps_from_first_to_lastCount / iterations
@@ -792,6 +847,24 @@ for i in range(1, 41):
     averageFractionPionner = fraction_pionner_count / iterations
     fraction_pionner_row.append(averageFractionPionner)
     print(numOfAgents, " agents -> average of explored fraction until pionner find the goal: ", averageFractionPionner)
+    averageOfStepsOfThePionnerAfterInterval1 = pioneer_stepsCount_after_interval1 / iterations
+    pioneer_after_interval1_row.append(averageOfStepsOfThePionnerAfterInterval1)
+    averageOfStepsOfThePionnerAfterInterval2 = pioneer_stepsCount_after_interval2 / iterations
+    pioneer_after_interval2_row.append(averageOfStepsOfThePionnerAfterInterval2)
+    print(numOfAgents, " agents -> average of pioneer after interval 1: ", averageOfStepsOfThePionnerAfterInterval1)
+    print(numOfAgents, " agents -> average of pioneer after interval 2: ", averageOfStepsOfThePionnerAfterInterval2)
+    averageFractionPionnerAfterInterval1 = after_interval_1_count / iterations
+    fraction_pioneer_after_interval1_row.append(averageFractionPionnerAfterInterval1)
+    averageFractionPionnerAfterInterval2 = after_interval_2_count / iterations
+    fraction_pioneer_after_interval2_row.append(averageFractionPionnerAfterInterval2)
+    averageFractionPionnerInInterval2 = pioneer_interval2_count / iterations
+    fraction_pioneer_in_interval2_row.append(averageFractionPionnerInInterval2)
+    print(numOfAgents, " agents -> average of pioneer after interval 1 - fraction: ", averageFractionPionnerAfterInterval1)
+    print(numOfAgents, " agents -> average of pioneer after interval 2 - fraction: ", averageFractionPionnerAfterInterval2)
+    print(numOfAgents, " agents -> average of pioneer in interval 2 - fraction: ", averageFractionPionnerInInterval2)
+    averageStepsAgentsUsingInterval2 = steps_agents_using_interval2_count / numOfAgents / iterations
+    steps_agents_using_interval2_row.append(averageStepsAgentsUsingInterval2)
+    print(numOfAgents, " agents -> average number of steps of agents using interval 2: ", averageStepsAgentsUsingInterval2)
 
     averageOfSteps = stepsCount / numOfAgents / iterations
     averageOfStepsOfThePionner = pionner_stepsCount / iterations
@@ -807,7 +880,7 @@ for i in range(1, 41):
     fraction_row.append(averageOfFraction)
     stdev_row.append(stdev)
 
-with open("my_1to40agents_250iterations_40x40_v2.csv", "w") as f:
+with open("my_1to40agents_250iterations_40x40_strangepeaks.csv", "w") as f:
     writer = csv.writer(f)
 
     writer.writerow(header)
@@ -821,6 +894,13 @@ with open("my_1to40agents_250iterations_40x40_v2.csv", "w") as f:
 
     # Only for my algorithm
     writer.writerow(fraction_pionner_row)
+    
+    writer.writerow(pioneer_after_interval1_row)
+    writer.writerow(pioneer_after_interval2_row)
+    writer.writerow(fraction_pioneer_after_interval1_row)
+    writer.writerow(fraction_pioneer_after_interval2_row)
+    writer.writerow(fraction_pioneer_in_interval2_row)
+    writer.writerow(steps_agents_using_interval2_row)
 
 
 
