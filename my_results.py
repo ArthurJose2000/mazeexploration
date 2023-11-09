@@ -121,7 +121,8 @@ plt.plot(header, tarry_steps_from_first_to_last_row, label = "TARRY: Average Ste
 
 plt.xlabel('No. of agents')
 #plt.ylabel('No. of steps')
-plt.ylabel('Fraction of maze explored (%)')
+#plt.ylabel('Fraction of maze explored (%)')
+plt.ylabel('Fraction of all 250 mazes (40x40) (%)')
 plt.title('40x40 maze - 2 intervals policy - when does pioneer find the goal?')
 
 plt.grid()
