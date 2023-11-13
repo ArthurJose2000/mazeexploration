@@ -22,6 +22,14 @@ class MyAlgorithm:
         # Test
         self.currentAgentInterval = (0, 1)
 
+        # Test - anomaly
+        self.firstSearch = [-1 for i in range(numOfAgents)]
+        self.firstInterval = [-1 for i in range(numOfAgents)]
+        self.backtracking = [-1 for i in range(numOfAgents)]
+        self.secondSearch = [-1 for i in range(numOfAgents)]
+        self.secondInterval = [-1 for i in range(numOfAgents)]
+        self.residue = [0 for i in range(numOfAgents)]
+
         if self.start is None:
             self.start = (self.maze.rows,self.maze.cols)
 
@@ -36,6 +44,7 @@ class MyAlgorithm:
         explored = []
         agents_search = []
         pionner_steps = sys.maxsize
+        pioneer_index = -1
         totalSteps = 0
         for i in range(0, self.numOfAgents):
             start = i * division
@@ -71,8 +80,9 @@ class MyAlgorithm:
             totalSteps += agent_steps
 
             # Get the number of the steps of the pionner
-            if foundTheGoal == True:
-                pionner_steps = agent_steps if pionner_steps > agent_steps else pionner_steps
+            if foundTheGoal == True and pionner_steps > agent_steps:
+                pionner_steps = agent_steps
+                pioneer_index = i
 
         if pionner_steps == sys.maxsize:
             print("ERRO")
@@ -95,11 +105,56 @@ class MyAlgorithm:
         # self.maze.tracePaths([paths[2]], kill=False, delay=100)
 
         """ #self.maze.tracePaths(paths, kill=False, delay=100)
-        self.maze.tracePaths_by_key_press(paths, kill=False)
+        #self.maze.tracePaths_by_key_press(paths, kill=False)
+        self.maze.tracePaths_by_key_press([paths[19]], kill=False)
 
         self.maze.run() """
 
-        return totalSteps, pionner_steps, fraction, fraction_pionner
+        for i in range(self.numOfAgents):
+            if self.firstSearch[i] == -1:
+                self.firstSearch[i] = 0
+            if self.firstInterval[i] == -1:
+                self.firstInterval[i] = 0
+            if self.backtracking[i] == -1:
+                self.backtracking[i] = 0
+            if self.secondSearch[i] == -1:
+                self.secondSearch[i] = 0
+            if self.secondInterval[i] == -1:
+                self.secondInterval[i] = 0
+
+
+        """ print("self.firstSearch: ", self.firstSearch[pioneer_index])
+        print("self.firstInterval: ", self.firstInterval[pioneer_index])
+        print("self.backtracking: ", self.backtracking[pioneer_index])
+        print("self.secondSearch: ", self.secondSearch[pioneer_index])
+        print("self.secondInterval: ", self.secondInterval[pioneer_index])
+        print("self.residue: ", self.residue[pioneer_index])
+        print("pioneer_steps (", pioneer_index, "): ", pionner_steps) """
+
+        firstSearchAverage = sum(self.firstSearch) / len(self.firstSearch)
+        firstIntervalAverage = sum(self.firstInterval) / len(self.firstInterval)
+        backtrackingAverage = sum(self.backtracking) / len(self.backtracking)
+        secondSearchAverage = sum(self.secondSearch) / len(self.secondSearch)
+        secondIntervalAverage = sum(self.secondInterval) / len(self.secondInterval)
+        residueAverage = sum(self.residue) / len(self.residue)
+
+        firstSearch_pioneer = self.firstSearch[pioneer_index]
+        firstInterval_pioneer = self.firstInterval[pioneer_index]
+        backtracking_pioneer = self.backtracking[pioneer_index]
+        secondSearch_pioneer = self.secondSearch[pioneer_index]
+        secondInterval_pioneer = self.secondInterval[pioneer_index]
+        residue_pioneer = self.residue[pioneer_index]
+
+        """ print("self.firstSearch: ", self.firstSearch)
+        print("self.firstInterval: ", self.firstInterval)
+        print("self.backtracking: ", self.backtracking)
+        print("self.secondSearch: ", self.secondSearch)
+        print("self.secondInterval: ", self.secondInterval)
+        print("self.residue: ", self.residue)
+        print("pioneer_steps (", pioneer_index, "): ", pionner_steps) """
+
+
+        return totalSteps, pionner_steps, fraction, fraction_pionner, firstSearchAverage, firstIntervalAverage, backtrackingAverage, secondSearchAverage, secondIntervalAverage, residueAverage, firstSearch_pioneer, firstInterval_pioneer, backtracking_pioneer, secondSearch_pioneer, secondInterval_pioneer, residue_pioneer
 
     # Run the algorithm for a single agent
     def run_single_agent(self, agentIndex):
@@ -116,9 +171,24 @@ class MyAlgorithm:
         # currently the algorithm has a stop condition
         foundTheGoal = False
 
+        # Test - anomaly
+        stepsCount_anomaly = 0
+        rising = 0
+
         while True:
 
+            stepsCount_anomaly += 1
+
             if currCell==self.maze._goal:
+
+                if self.firstSearch[agentIndex] == -1:
+                    self.firstSearch[agentIndex] = stepsCount_anomaly
+
+                if self.backtracking[agentIndex] != -1 and self.secondSearch[agentIndex] == -1:
+                    self.secondSearch[agentIndex] = stepsCount_anomaly - 1
+                    stepsCount_anomaly = 0
+
+
                 mySearch.append(currCell)
                 effective_path.append(currCell)
                 foundTheGoal = True
@@ -128,6 +198,22 @@ class MyAlgorithm:
             nonVisitedChildren, allChildren = self.getChildrenPoints(currCell, self.maze.maze_map[currCell], parentList[-1], explored)
             count_nonVisitedChildren = len(nonVisitedChildren)
             if count_nonVisitedChildren == 0:
+
+                rising += 1
+
+
+
+                if self.firstSearch[agentIndex] == -1:
+                    self.firstSearch[agentIndex] = stepsCount_anomaly - 1
+                    stepsCount_anomaly = 0
+
+                if self.backtracking[agentIndex] != -1 and self.secondSearch[agentIndex] == -1:
+                    self.secondSearch[agentIndex] = stepsCount_anomaly - 1
+                    stepsCount_anomaly = 0
+
+
+
+
                 if currCell not in explored:
                     explored.append(currCell)
 
@@ -150,7 +236,20 @@ class MyAlgorithm:
             #next = self.defineAgentNextStep(agentInterval, agent_path, allChildren, nonVisitedChildren, currCell, agentIndex)
             next = self.defineAgentNextStep( agent_path, allChildren, nonVisitedChildren, currCell, agentIndex)
 
+            if self.filledInterval[agentIndex] == True and self.firstInterval[agentIndex] == -1:
+                self.backtracking[agentIndex] = rising
+                self.firstInterval[agentIndex] = stepsCount_anomaly - rising
+                stepsCount_anomaly = 0
+
+            if self.filledInterval2[agentIndex] == True and self.secondInterval[agentIndex] == -1:
+                self.secondInterval[agentIndex] = stepsCount_anomaly
+                stepsCount_anomaly = 0
+
             if next == -1:
+
+                rising += 1
+
+
                 if currCell not in explored:
                     explored.append(currCell)
 
@@ -160,6 +259,16 @@ class MyAlgorithm:
                     currCell = parentList.pop()
                     effective_path.pop()
                     agent_path.pop()
+
+                    if self.firstSearch[agentIndex] == -1:
+                        self.firstSearch[agentIndex] = stepsCount_anomaly - 1
+                        stepsCount_anomaly = 0
+
+                    if self.backtracking[agentIndex] != -1 and self.secondSearch[agentIndex] == -1:
+                        self.secondSearch[agentIndex] = stepsCount_anomaly - 1
+                        stepsCount_anomaly = 0
+
+
 
                 continue
             
@@ -179,6 +288,31 @@ class MyAlgorithm:
                 currCell = (currCell[0]+1,currCell[1])     
             elif childCellPoint=='W':
                 currCell = (currCell[0],currCell[1]-1)
+
+            
+            rising = 0
+
+            
+            """ if self.firstInterval[agentIndex] != -1 and self.backtracking[agentIndex] == -1:
+                self.backtracking[agentIndex] = stepsCount_anomaly
+                stepsCount_anomaly = 0 """
+
+        if self.firstInterval[agentIndex] == -1:
+            self.firstInterval[agentIndex] = stepsCount_anomaly
+        elif self.secondSearch[agentIndex] != -1 and self.secondInterval[agentIndex] == -1:
+            self.secondInterval[agentIndex] = stepsCount_anomaly
+        else:
+            self.residue[agentIndex] = stepsCount_anomaly
+        """ elif self.firstInterval[agentIndex] == -1:
+            self.firstInterval[agentIndex] = stepsCount_anomaly
+        elif self.backtracking[agentIndex] == -1:
+            self.backtracking[agentIndex] = stepsCount_anomaly
+        elif self.secondSearch[agentIndex] == -1:
+            self.secondSearch[agentIndex] = stepsCount_anomaly
+        elif self.secondInterval[agentIndex] == -1:
+            self.secondInterval[agentIndex] = stepsCount_anomaly """
+
+
 
         return mySearch, effective_path, explored, foundTheGoal
 
@@ -285,6 +419,9 @@ class MyAlgorithm:
             # If the agent doesn't finish its interval and no node that fills the requirement was found, it goes to parent
             if self.filledInterval[agentIndex] == False:
                 return -1
+            
+        """ if self.filledInterval[agentIndex] == True and self.modified[agentIndex] == False and currCell != self.start:
+            return -1 """
             
         if self.filledInterval2[agentIndex] == False:
 
@@ -728,6 +865,20 @@ pionner_steps_row = []
 fraction_row = []
 stdev_row = []
 
+firstSearchAverage_row = []
+firstIntervalAverage_row = []
+backtrackingAverage_row = []
+secondSearchAverage_row = []
+secondIntervalAverage_row = []
+residueAverage_row = []
+
+firstSearch_pioneer_row = []
+firstInterval_pioneer_row = []
+backtracking_pioneer_row = []
+secondSearch_pioneer_row = []
+secondInterval_pioneer_row = []
+residue_pioneer_row = []
+
 # Only for Tarry's algorithm
 steps_from_first_to_last_row = []
 
@@ -744,6 +895,20 @@ for i in range(1, 41):
     fractionCount = 0
     iterations = 250
     steps_array = []
+
+    firstSearchAverage_count = 0
+    firstIntervalAverage_count = 0
+    backtrackingAverage_count = 0
+    secondSearchAverage_count = 0
+    secondIntervalAverage_count = 0
+    residueAverage_count = 0
+
+    firstSearch_pioneer_count = 0
+    firstInterval_pioneer_count = 0
+    backtracking_pioneer_count = 0
+    secondSearch_pioneer_count = 0
+    secondInterval_pioneer_count = 0
+    residue_pioneer_count = 0
 
     # Only for Tarry's algorithm
     steps_from_first_to_lastCount = 0
@@ -763,7 +928,24 @@ for i in range(1, 41):
         #m.CreateMaze(loopPercent=0,theme='light', saveMaze=True)
 
         myAlgorithm = MyAlgorithm(m, numOfAgents, colorList, start=None)
-        steps, pionner_steps, fraction, fraction_pionner = myAlgorithm.run()
+        steps, pionner_steps, fraction, fraction_pionner, firstSearchAverage, firstIntervalAverage, backtrackingAverage, secondSearchAverage, secondIntervalAverage, residueAverage, firstSearch_pioneer, firstInterval_pioneer, backtracking_pioneer, secondSearch_pioneer, secondInterval_pioneer, residue_pioneer = myAlgorithm.run()
+
+        #print("AVERAGE: ", firstSearchAverage, firstIntervalAverage, backtrackingAverage, secondSearchAverage, secondIntervalAverage, residueAverage)
+        #print("PIONEER: ", firstSearch_pioneer, firstInterval_pioneer, backtracking_pioneer, secondSearch_pioneer, secondInterval_pioneer, residue_pioneer)
+
+        firstSearchAverage_count += firstSearchAverage
+        firstIntervalAverage_count += firstIntervalAverage
+        backtrackingAverage_count += backtrackingAverage
+        secondSearchAverage_count += secondSearchAverage
+        secondIntervalAverage_count += secondIntervalAverage
+        residueAverage_count += residueAverage
+
+        firstSearch_pioneer_count += firstSearch_pioneer
+        firstInterval_pioneer_count += firstInterval_pioneer
+        backtracking_pioneer_count += backtracking_pioneer
+        secondSearch_pioneer_count += secondSearch_pioneer
+        secondInterval_pioneer_count += secondInterval_pioneer
+        residue_pioneer_count += residue_pioneer
 
         """ tarryGeneralization = TarryGeneralization(m, numOfAgents, colorList, start=None)
         steps, pionner_steps, fraction, last_steps = tarryGeneralization.run() """
@@ -807,7 +989,22 @@ for i in range(1, 41):
     fraction_row.append(averageOfFraction)
     stdev_row.append(stdev)
 
-with open("my_1to40agents_250iterations_40x40_v2.csv", "w") as f:
+    firstSearchAverage_row.append(firstSearchAverage_count / iterations)
+    firstIntervalAverage_row.append(firstIntervalAverage_count / iterations)
+    backtrackingAverage_row.append(backtrackingAverage_count / iterations)
+    secondSearchAverage_row.append(secondSearchAverage_count / iterations)
+    secondIntervalAverage_row.append(secondIntervalAverage_count / iterations)
+    residueAverage_row.append(residueAverage_count / iterations)
+
+    firstSearch_pioneer_row.append(firstSearch_pioneer_count / iterations)
+    firstInterval_pioneer_row.append(firstInterval_pioneer_count / iterations)
+    backtracking_pioneer_row.append(backtracking_pioneer_count / iterations)
+    secondSearch_pioneer_row.append(secondSearch_pioneer_count / iterations)
+    secondInterval_pioneer_row.append(secondInterval_pioneer_count / iterations)
+    residue_pioneer_row.append(residue_pioneer_count / iterations)
+
+
+with open("my_1to40agents_250iterations_40x40_v2_anomaly_2.csv", "w") as f:
     writer = csv.writer(f)
 
     writer.writerow(header)
@@ -821,6 +1018,20 @@ with open("my_1to40agents_250iterations_40x40_v2.csv", "w") as f:
 
     # Only for my algorithm
     writer.writerow(fraction_pionner_row)
+
+    writer.writerow(firstSearchAverage_row)
+    writer.writerow(firstIntervalAverage_row)
+    writer.writerow(backtrackingAverage_row)
+    writer.writerow(secondSearchAverage_row)
+    writer.writerow(secondIntervalAverage_row)
+    writer.writerow(residueAverage_row)
+
+    writer.writerow(firstSearch_pioneer_row)
+    writer.writerow(firstInterval_pioneer_row)
+    writer.writerow(backtracking_pioneer_row)
+    writer.writerow(secondSearch_pioneer_row)
+    writer.writerow(secondInterval_pioneer_row)
+    writer.writerow(residue_pioneer_row)
 
 
 
