@@ -378,7 +378,7 @@ class MyAlgorithm:
         
         # Get the weight interval of each node
         relative_node_weights = self.getRelativeNodeWeights(agent_path, totalNumberOfChildren)
-        """ print("agentInterval: ", agentInterval)
+        """ print("agentInterval: ", self.currentAgentInterval)
         print("relative_node_weights: ", relative_node_weights)
         print("agent_path: ", agent_path)
         print("totalNumberOfChildren: ", totalNumberOfChildren) """
@@ -436,6 +436,7 @@ class MyAlgorithm:
                 return -1
 
             for i in range(0, totalNumberOfChildren):
+                print(" -> relative_node_weights[i]: ", relative_node_weights[i])
 
                 if newInterval[1] <= relative_node_weights[i][1]:
 
@@ -452,8 +453,8 @@ class MyAlgorithm:
                     break
 
             if self.modified[agentIndex] == False:
+                print("aki - relative_node_weights: ", relative_node_weights)
                 return -1
-
 
         if self.filledInterval2[agentIndex] == False:
 
@@ -470,9 +471,11 @@ class MyAlgorithm:
                 # nodeIsInsideAgentInterval = self.currentAgentInterval[0] < relative_node_weights[i][1]
                 nodeIsInsideAgentInterval = self.currentAgentInterval[0] < relative_node_weights[index][1] and self.currentAgentInterval[1] > relative_node_weights[index][0]
                 nodeWasNotVisistedByTheAgent = allChildren[index] in nonVisitedChildren
-
+                print("self.currentAgentInterval, relative_node_weights[index]:", self.currentAgentInterval, relative_node_weights[index])
+                print("oi nodeIsInsideAgentInterval nodeWasNotVisistedByTheAgent:", nodeIsInsideAgentInterval, nodeWasNotVisistedByTheAgent)
                 if nodeIsInsideAgentInterval and nodeWasNotVisistedByTheAgent:
                     agent_path.append((index, totalNumberOfChildren))
+                    print(index)
                     return index
 
             # If the agent is in the root and it doesn't find a node that fills the requirement, it finished its interval
