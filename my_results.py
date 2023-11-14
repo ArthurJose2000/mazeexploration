@@ -29,10 +29,9 @@ my_fraction_row = rows[3]
 my_stdev_row = rows[4]
 my_fraction_pionner = rows[5]
 
-""" header = rows[0]
 
 rows = []
-with open("my_1to40agents_250iterations_30x30_v2.csv", "r") as f:
+with open("my_1to40agents_250iterations_40x40_v2.csv", "r") as f:
     csvreader = csv.reader(f)
 
     for row in csvreader:
@@ -42,10 +41,10 @@ my_v2_steps_row = rows[1]
 my_v2_pionner_steps_row = rows[2]
 my_v2_fraction_row = rows[3]
 my_v2_stdev_row = rows[4]
-my_v2_fraction_pionner = rows[5] """
+my_v2_fraction_pionner = rows[5]
 
 rows = []
-with open("my_1to40agents_250iterations_40x40_v2_anomaly_2.csv", "r") as f:
+with open("my_1to40agents_250iterations_40x40_v2_anomaly_3.csv", "r") as f:
     csvreader = csv.reader(f)
 
     for row in csvreader:
@@ -73,12 +72,17 @@ anomaly_secondSearch_pioneer = rows[15]
 anomaly_secondInterval_pioneer = rows[16]
 anomaly_residue_pioneer = rows[17]
 
-""" plt.plot(header, anomaly_firstSearch, label = "First Search")
-plt.plot(header, anomaly_firstInterval, label = "First Interval") """
+""" plt.plot(header, my_v2_steps_row, label="steps_row")
+plt.plot(header, anomaly_pionner_steps_row, label="pioneer_row")
+plt.plot(header, anomaly_steps_row, label="New: steps_row")
+plt.plot(header, anomaly_pionner_steps_row, label="New: pioneer_row") """
+
+plt.plot(header, anomaly_firstSearch, label = "First Search")
+plt.plot(header, anomaly_firstInterval, label = "First Interval")
 plt.plot(header, anomaly_backtracking, label = "Backtracking")
-""" plt.plot(header, anomaly_secondSearch, label = "Second Search")
+plt.plot(header, anomaly_secondSearch, label = "Second Search")
 plt.plot(header, anomaly_secondInterval, label = "Second Interval")
-plt.plot(header, anomaly_residue, label = "DFS") """
+plt.plot(header, anomaly_residue, label = "DFS")
 
 """ plt.plot(header, anomaly_firstSearch_pioneer, label = "Pioneer: First Search")
 plt.plot(header, anomaly_firstInterval_pioneer, label = "Pioneer: First Interval")
@@ -122,5 +126,5 @@ plt.title('Anomaly - All agents - 40x40 maze')
 
 plt.grid()
 plt.legend()
-plt.savefig('anomaly_allagents_40x40_backtracking.pdf', format="pdf")
+plt.savefig('new_anomaly_allagents_40x40.pdf', format="pdf")
 plt.show()

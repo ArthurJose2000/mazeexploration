@@ -420,21 +420,42 @@ class MyAlgorithm:
             if self.filledInterval[agentIndex] == False:
                 return -1
             
-        """ if self.filledInterval[agentIndex] == True and self.modified[agentIndex] == False and currCell != self.start:
-            return -1 """
+        # Rising until find the limit of the second interval
+        if self.filledInterval[agentIndex] == True and self.modified[agentIndex] == False:
+
+            chunk = self.currentAgentInterval[1] - self.currentAgentInterval[0]
+            newInterval = (0, 0)
+
+            if self.currentAgentInterval[1] == 1:
+                newInterval = (0, chunk)
+            else:
+                newInterval = (self.currentAgentInterval[1], self.currentAgentInterval[1] + chunk)
+
             
-        if self.filledInterval2[agentIndex] == False:
+            if self.currentAgentInterval[1] == 1 and currCell != self.start:
+                return -1
+
+            for i in range(0, totalNumberOfChildren):
+
+                if newInterval[1] <= relative_node_weights[i][1]:
+
+                    print("newInterval: ", newInterval)
+                    print("relative_node_weights[i]: ", relative_node_weights[i])
+
+                    self.modified[agentIndex] = True
+                    self.currentAgentInterval = newInterval
+
+                    # Must not happen
+                    if newInterval[1] < relative_node_weights[i][0]:
+                        print("ERRO")
+
+                    break
 
             if self.modified[agentIndex] == False:
+                return -1
 
-                self.modified[agentIndex] = True
 
-                chunk = self.currentAgentInterval[1] - self.currentAgentInterval[0]
-
-                if self.currentAgentInterval[1] == 1:
-                    self.currentAgentInterval = (0, chunk)
-                else:
-                    self.currentAgentInterval = (self.currentAgentInterval[1], self.currentAgentInterval[1] + chunk)
+        if self.filledInterval2[agentIndex] == False:
 
             # Return the first child that is able to obey the limits
             for i in range(0, totalNumberOfChildren):
@@ -885,7 +906,7 @@ steps_from_first_to_last_row = []
 # Only for my algorithm
 fraction_pionner_row = []
 
-for i in range(1, 41):
+for i in range(31, 41):
 
     numOfAgents = i
     header.append(numOfAgents)
@@ -1004,7 +1025,7 @@ for i in range(1, 41):
     residue_pioneer_row.append(residue_pioneer_count / iterations)
 
 
-with open("my_1to40agents_250iterations_40x40_v2_anomaly_2.csv", "w") as f:
+with open("my_1to40agents_250iterations_40x40_v2_anomaly_3.csv", "w") as f:
     writer = csv.writer(f)
 
     writer.writerow(header)
