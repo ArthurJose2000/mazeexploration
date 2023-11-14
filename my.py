@@ -272,7 +272,7 @@ class MyAlgorithm:
         
         # Get the weight interval of each node
         relative_node_weights = self.getRelativeNodeWeights(agent_path, totalNumberOfChildren)
-        """ print("agentInterval: ", agentInterval)
+        """ print("agentInterval: ", self.currentAgentInterval)
         print("relative_node_weights: ", relative_node_weights)
         print("agent_path: ", agent_path)
         print("totalNumberOfChildren: ", totalNumberOfChildren) """
@@ -314,18 +314,38 @@ class MyAlgorithm:
             if self.filledInterval[agentIndex] == False:
                 return -1
             
-        if self.filledInterval2[agentIndex] == False:
+        # Rising until find the limit of the second interval
+        if self.filledInterval[agentIndex] == True and self.modified[agentIndex] == False:
+
+            chunk = self.currentAgentInterval[1] - self.currentAgentInterval[0]
+            newInterval = (0, 0)
+
+            if self.currentAgentInterval[1] == 1:
+                newInterval = (0, chunk)
+            else:
+                newInterval = (self.currentAgentInterval[1], self.currentAgentInterval[1] + chunk)
+
+            
+            if self.currentAgentInterval[1] == 1 and currCell != self.start:
+                return -1
+
+            for i in range(0, totalNumberOfChildren):
+
+                if newInterval[1] <= relative_node_weights[i][1]:
+
+                    self.modified[agentIndex] = True
+                    self.currentAgentInterval = newInterval
+
+                    # Must not happen
+                    if newInterval[1] < relative_node_weights[i][0]:
+                        print("ERRO")
+
+                    break
 
             if self.modified[agentIndex] == False:
+                return -1
 
-                self.modified[agentIndex] = True
-
-                chunk = self.currentAgentInterval[1] - self.currentAgentInterval[0]
-
-                if self.currentAgentInterval[1] == 1:
-                    self.currentAgentInterval = (0, chunk)
-                else:
-                    self.currentAgentInterval = (self.currentAgentInterval[1], self.currentAgentInterval[1] + chunk)
+        if self.filledInterval2[agentIndex] == False:
 
             # Return the first child that is able to obey the limits
             for i in range(0, totalNumberOfChildren):
@@ -340,7 +360,6 @@ class MyAlgorithm:
                 # nodeIsInsideAgentInterval = self.currentAgentInterval[0] < relative_node_weights[i][1]
                 nodeIsInsideAgentInterval = self.currentAgentInterval[0] < relative_node_weights[index][1] and self.currentAgentInterval[1] > relative_node_weights[index][0]
                 nodeWasNotVisistedByTheAgent = allChildren[index] in nonVisitedChildren
-
                 if nodeIsInsideAgentInterval and nodeWasNotVisistedByTheAgent:
                     agent_path.append((index, totalNumberOfChildren))
                     return index
