@@ -436,12 +436,12 @@ class MyAlgorithm:
                 return -1
 
             for i in range(0, totalNumberOfChildren):
-                print(" -> relative_node_weights[i]: ", relative_node_weights[i])
+                #print(" -> relative_node_weights[i]: ", relative_node_weights[i])
 
                 if newInterval[1] <= relative_node_weights[i][1]:
 
-                    print("newInterval: ", newInterval)
-                    print("relative_node_weights[i]: ", relative_node_weights[i])
+                    #print("newInterval: ", newInterval)
+                    #print("relative_node_weights[i]: ", relative_node_weights[i])
 
                     self.modified[agentIndex] = True
                     self.currentAgentInterval = newInterval
@@ -453,7 +453,7 @@ class MyAlgorithm:
                     break
 
             if self.modified[agentIndex] == False:
-                print("aki - relative_node_weights: ", relative_node_weights)
+                #print("aki - relative_node_weights: ", relative_node_weights)
                 return -1
 
         if self.filledInterval2[agentIndex] == False:
@@ -909,7 +909,7 @@ steps_from_first_to_last_row = []
 # Only for my algorithm
 fraction_pionner_row = []
 
-for i in range(31, 41):
+for i in range(1, 41):
 
     numOfAgents = i
     header.append(numOfAgents)
