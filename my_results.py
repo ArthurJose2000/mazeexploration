@@ -17,7 +17,7 @@ tarry_stdev_row = rows[4]
 tarry_steps_from_first_to_last_row = rows[5]
 
 rows = []
-with open("my_1to40agents_250iterations_40x40.csv", "r") as f:
+with open("my_1to40agents_250iterations_40x40_new.csv", "r") as f:
     csvreader = csv.reader(f)
 
     for row in csvreader:
@@ -93,9 +93,9 @@ plt.plot(header, anomaly_secondInterval, label = "Second Interval")
 plt.plot(header, anomaly_residue, label = "DFS") """
 
 """ plt.plot(header, anomaly_firstSearch_pioneer, label = "Pioneer: First Search")
-plt.plot(header, anomaly_firstInterval_pioneer, label = "Pioneer: First Interval") """
+plt.plot(header, anomaly_firstInterval_pioneer, label = "Pioneer: First Interval")
 plt.plot(header, anomaly_backtracking_pioneer, label = "Pioneer: Backtracking")
-""" plt.plot(header, anomaly_secondSearch_pioneer, label = "Pioneer: Second Search")
+plt.plot(header, anomaly_secondSearch_pioneer, label = "Pioneer: Second Search")
 plt.plot(header, anomaly_secondInterval_pioneer, label = "Pioneer: Second Interval")
 plt.plot(header, anomaly_residue_pioneer, label = "Pioneer: DFS") """
 
@@ -129,21 +129,21 @@ plt.plot(header, tarry_steps_from_first_to_last_row, label = "TARRY: Average Ste
 #plt.plot(header, my_steps_row, 'b.-',label = "1I: Average of steps")
 #plt.plot(header, my_pioneer_steps_row, 'bd-', label = "1I: Pioneer's average of steps")
 #plt.plot(header, my_stdev_row, 'bx-', label = "1I: STDEV - Average of steps")
-#plt.plot(header, my_fraction_row, 'b*-', label = "1I: Fraction of maze explored")
-#plt.plot(header, my_fraction_pioneer, 'b^-', label = "1I: Fraction of maze explored when pioneer reaches target")
+plt.plot(header, my_fraction_row, 'b*-', label = "1I: Fraction of maze explored")
+plt.plot(header, my_fraction_pioneer, 'b^-', label = "1I: Fraction of maze explored when pioneer reaches target")
 #plt.plot(header, my_v2_steps_row, 'r.-',label = "2I: Average of steps")
 #plt.plot(header, my_v2_pioneer_steps_row, 'rd-', label = "2I: Pioneer's average of steps")
 #plt.plot(header, my_v2_stdev_row, 'rx-', label = "2I: STDEV - Average of steps")
-#plt.plot(header, my_v2_fraction_row, 'r*-', label = "2I: Fraction of maze explored")
-#plt.plot(header, my_v2_fraction_pioneer, 'r^-', label = "2I: Fraction of maze explored when pioneer reaches target")
+plt.plot(header, my_v2_fraction_row, 'r*-', label = "2I: Fraction of maze explored")
+plt.plot(header, my_v2_fraction_pioneer, 'r^-', label = "2I: Fraction of maze explored when pioneer reaches target")
 
 
 plt.xlabel('No. of agents')
-plt.ylabel('No. of steps')
-#plt.ylabel('Fraction of maze explored (%)')
-plt.title('Anomaly - Pioneer - 40-by-40 maze')
+#plt.ylabel('No. of steps')
+plt.ylabel('Fraction of maze explored (%)')
+plt.title('(2) Our algorithm - 1 interval vs. 2 intervals - 40-by-40 maze')
 
 plt.grid()
-plt.legend()
-plt.savefig('new_anomaly_pioneer_40x40_backtracking.pdf', format="pdf")
+#plt.legend()
+plt.savefig('our_algorithm_1I_vs_2I_40x40_fraction.pdf', format="pdf")
 plt.show()
