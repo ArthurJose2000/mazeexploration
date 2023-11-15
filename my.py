@@ -106,7 +106,7 @@ class MyAlgorithm:
 
         """ #self.maze.tracePaths(paths, kill=False, delay=100)
         #self.maze.tracePaths_by_key_press(paths, kill=False)
-        self.maze.tracePaths_by_key_press([paths[19]], kill=False)
+        self.maze.tracePaths_by_key_press([paths[1]], kill=False)
 
         self.maze.run() """
 
@@ -400,7 +400,7 @@ class MyAlgorithm:
             for i in range(0, totalNumberOfChildren):
 
                 # If the current child's interval is on the right of the agent's interval, surely the agent finished its interval
-                if self.currentAgentInterval[1] < relative_node_weights[i][0]:
+                if self.currentAgentInterval[1] <= relative_node_weights[i][0]:
                     self.filledInterval[agentIndex] = True
                     break
 
@@ -471,11 +471,10 @@ class MyAlgorithm:
                 # nodeIsInsideAgentInterval = self.currentAgentInterval[0] < relative_node_weights[i][1]
                 nodeIsInsideAgentInterval = self.currentAgentInterval[0] < relative_node_weights[index][1] and self.currentAgentInterval[1] > relative_node_weights[index][0]
                 nodeWasNotVisistedByTheAgent = allChildren[index] in nonVisitedChildren
-                print("self.currentAgentInterval, relative_node_weights[index]:", self.currentAgentInterval, relative_node_weights[index])
-                print("oi nodeIsInsideAgentInterval nodeWasNotVisistedByTheAgent:", nodeIsInsideAgentInterval, nodeWasNotVisistedByTheAgent)
+                #print("self.currentAgentInterval, relative_node_weights[index]:", self.currentAgentInterval, relative_node_weights[index])
+                #print("oi nodeIsInsideAgentInterval nodeWasNotVisistedByTheAgent:", nodeIsInsideAgentInterval, nodeWasNotVisistedByTheAgent)
                 if nodeIsInsideAgentInterval and nodeWasNotVisistedByTheAgent:
                     agent_path.append((index, totalNumberOfChildren))
-                    print(index)
                     return index
 
             # If the agent is in the root and it doesn't find a node that fills the requirement, it finished its interval
@@ -1028,7 +1027,7 @@ for i in range(1, 41):
     residue_pioneer_row.append(residue_pioneer_count / iterations)
 
 
-with open("my_1to40agents_250iterations_40x40_v2_anomaly_3.csv", "w") as f:
+with open("my_1to40agents_250iterations_40x40_v2_anomaly_4.csv", "w") as f:
     writer = csv.writer(f)
 
     writer.writerow(header)
