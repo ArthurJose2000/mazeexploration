@@ -294,7 +294,7 @@ class MyAlgorithm:
             for i in range(0, totalNumberOfChildren):
 
                 # If the current child's interval is on the right of the agent's interval, surely the agent finished its interval
-                if self.currentAgentInterval[1] < relative_node_weights[i][0]:
+                if self.currentAgentInterval[1] <= relative_node_weights[i][0]:
                     self.filledInterval[agentIndex] = True
                     break
 
