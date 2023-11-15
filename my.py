@@ -330,8 +330,12 @@ class MyAlgorithm:
                 return -1
 
             for i in range(0, totalNumberOfChildren):
+                #print(" -> relative_node_weights[i]: ", relative_node_weights[i])
 
                 if newInterval[1] <= relative_node_weights[i][1]:
+
+                    #print("newInterval: ", newInterval)
+                    #print("relative_node_weights[i]: ", relative_node_weights[i])
 
                     self.modified[agentIndex] = True
                     self.currentAgentInterval = newInterval
@@ -343,6 +347,7 @@ class MyAlgorithm:
                     break
 
             if self.modified[agentIndex] == False:
+                #print("aki - relative_node_weights: ", relative_node_weights)
                 return -1
 
         if self.filledInterval2[agentIndex] == False:
@@ -360,6 +365,8 @@ class MyAlgorithm:
                 # nodeIsInsideAgentInterval = self.currentAgentInterval[0] < relative_node_weights[i][1]
                 nodeIsInsideAgentInterval = self.currentAgentInterval[0] < relative_node_weights[index][1] and self.currentAgentInterval[1] > relative_node_weights[index][0]
                 nodeWasNotVisistedByTheAgent = allChildren[index] in nonVisitedChildren
+                #print("self.currentAgentInterval, relative_node_weights[index]:", self.currentAgentInterval, relative_node_weights[index])
+                #print("oi nodeIsInsideAgentInterval nodeWasNotVisistedByTheAgent:", nodeIsInsideAgentInterval, nodeWasNotVisistedByTheAgent)
                 if nodeIsInsideAgentInterval and nodeWasNotVisistedByTheAgent:
                     agent_path.append((index, totalNumberOfChildren))
                     return index
