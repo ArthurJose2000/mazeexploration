@@ -945,7 +945,7 @@ for i in range(1, 41):
         m=maze(numOfLines,numOfColumns)
 
         # Create a maze
-        m.CreateMaze(theme='light', loadMaze='mazes/40_by_40/maze_40x40__' + str(j+1) + '.csv')
+        m.CreateMaze(theme='light', loadMaze='mazes/10_by_10/maze_10x10__' + str(j+1) + '.csv')
         #m.CreateMaze(theme='light', loadMaze='testperfect3.csv')
         #m.CreateMaze(loopPercent=0,theme='light')
         #m.CreateMaze(loopPercent=0,theme='light', saveMaze=True)
@@ -1027,7 +1027,7 @@ for i in range(1, 41):
     residue_pioneer_row.append(residue_pioneer_count / iterations)
 
 
-with open("my_1to40agents_250iterations_40x40_v2_anomaly_4.csv", "w") as f:
+with open("my_1to40agents_250iterations_10x10_v2_anomaly_4.csv", "w") as f:
     writer = csv.writer(f)
 
     writer.writerow(header)
