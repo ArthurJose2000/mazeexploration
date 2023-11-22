@@ -1,8 +1,6 @@
 from pyamaze import maze,agent,COLOR
 import sys
 import random
-import csv
-import statistics
 
 class MyAlgorithm:
     def __init__(self, maze, numOfAgents, colorList, start=None):
@@ -95,11 +93,10 @@ class MyAlgorithm:
         # Show only agent i
         # self.maze.tracePaths([paths[2]], kill=False, delay=100)
 
-        """ #self.maze.tracePaths(paths, kill=False, delay=100)
-        #self.maze.tracePaths_by_key_press(paths, kill=False)
-        self.maze.tracePaths_by_key_press([paths[1]], kill=False)
+        #self.maze.tracePaths(paths, kill=False, delay=100)
+        self.maze.tracePaths_by_key_press(paths, kill=False)
 
-        self.maze.run() """
+        self.maze.run()
 
         for i in range(self.numOfAgents):
             if self.firstSearch[i] == -1:
@@ -112,15 +109,6 @@ class MyAlgorithm:
                 self.secondSearch[i] = 0
             if self.secondInterval[i] == -1:
                 self.secondInterval[i] = 0
-
-
-        """ print("self.firstSearch: ", self.firstSearch[pioneer_index])
-        print("self.firstInterval: ", self.firstInterval[pioneer_index])
-        print("self.backtracking: ", self.backtracking[pioneer_index])
-        print("self.secondSearch: ", self.secondSearch[pioneer_index])
-        print("self.secondInterval: ", self.secondInterval[pioneer_index])
-        print("self.residue: ", self.residue[pioneer_index])
-        print("pioneer_steps (", pioneer_index, "): ", pionner_steps) """
 
         firstSearchAverage = sum(self.firstSearch) / len(self.firstSearch)
         firstIntervalAverage = sum(self.firstInterval) / len(self.firstInterval)
@@ -135,14 +123,6 @@ class MyAlgorithm:
         secondSearch_pioneer = self.secondSearch[pioneer_index]
         secondInterval_pioneer = self.secondInterval[pioneer_index]
         residue_pioneer = self.residue[pioneer_index]
-
-        """ print("self.firstSearch: ", self.firstSearch)
-        print("self.firstInterval: ", self.firstInterval)
-        print("self.backtracking: ", self.backtracking)
-        print("self.secondSearch: ", self.secondSearch)
-        print("self.secondInterval: ", self.secondInterval)
-        print("self.residue: ", self.residue)
-        print("pioneer_steps (", pioneer_index, "): ", pionner_steps) """
 
 
         return totalSteps, pionner_steps, fraction, fraction_pionner, firstSearchAverage, firstIntervalAverage, backtrackingAverage, secondSearchAverage, secondIntervalAverage, residueAverage, firstSearch_pioneer, firstInterval_pioneer, backtracking_pioneer, secondSearch_pioneer, secondInterval_pioneer, residue_pioneer
@@ -597,10 +577,10 @@ class TarryGeneralization:
         # Show only agent i
         # self.maze.tracePaths([paths[2]], kill=False, delay=100)
 
-        """ #self.maze.tracePaths(paths, kill=False, delay=50)
+        #self.maze.tracePaths(paths, kill=False, delay=50)
         self.maze.tracePaths_by_key_press(paths, kill=False)
 
-        self.maze.run() """
+        self.maze.run()
 
         return totalSteps, pionner_steps, fraction, last_steps
 
@@ -825,194 +805,27 @@ numOfLines = 10
 numOfColumns = 10
 
 # Number of agents
-numOfAgents = 5
-
-# It will be used in the case of loading a specific maze
-specificMaze = "somemaze.csv"
-
-# In the case of loading a specific maze with pointed out number of agents. Example: python3 my.py 3 test1
-if len(sys.argv) == 3:
-    numOfAgents = int(sys.argv[1])
-    specificMaze = sys.argv[2] + ".csv"
-
-header = []
-steps_row = []
-pionner_steps_row = []
-fraction_row = []
-stdev_row = []
-
-firstSearchAverage_row = []
-firstIntervalAverage_row = []
-backtrackingAverage_row = []
-secondSearchAverage_row = []
-secondIntervalAverage_row = []
-residueAverage_row = []
-
-firstSearch_pioneer_row = []
-firstInterval_pioneer_row = []
-backtracking_pioneer_row = []
-secondSearch_pioneer_row = []
-secondInterval_pioneer_row = []
-residue_pioneer_row = []
-
-# Only for Tarry's algorithm
-steps_from_first_to_last_row = []
-
-# Only for my algorithm
-fraction_pionner_row = []
-
-for i in range(1, 41):
-
-    numOfAgents = i
-    header.append(numOfAgents)
-
-    pionner_stepsCount = 0
-    stepsCount = 0
-    fractionCount = 0
-    iterations = 250
-    steps_array = []
-
-    firstSearchAverage_count = 0
-    firstIntervalAverage_count = 0
-    backtrackingAverage_count = 0
-    secondSearchAverage_count = 0
-    secondIntervalAverage_count = 0
-    residueAverage_count = 0
-
-    firstSearch_pioneer_count = 0
-    firstInterval_pioneer_count = 0
-    backtracking_pioneer_count = 0
-    secondSearch_pioneer_count = 0
-    secondInterval_pioneer_count = 0
-    residue_pioneer_count = 0
-
-    # Only for Tarry's algorithm
-    steps_from_first_to_lastCount = 0
-
-    # Only for my algorithm
-    fraction_pionner_count = 0
-
-    for j in range(0, iterations):
-
-        # Create a instance of a maze
-        m=maze(numOfLines,numOfColumns)
-
-        # Create a maze
-        m.CreateMaze(theme='light', loadMaze='mazes/10_by_10/maze_10x10__' + str(j+1) + '.csv')
-        #m.CreateMaze(theme='light', loadMaze='testperfect3.csv')
-        #m.CreateMaze(loopPercent=0,theme='light')
-        #m.CreateMaze(loopPercent=0,theme='light', saveMaze=True)
-
-        myAlgorithm = MyAlgorithm(m, numOfAgents, colorList, start=None)
-        steps, pionner_steps, fraction, fraction_pionner, firstSearchAverage, firstIntervalAverage, backtrackingAverage, secondSearchAverage, secondIntervalAverage, residueAverage, firstSearch_pioneer, firstInterval_pioneer, backtracking_pioneer, secondSearch_pioneer, secondInterval_pioneer, residue_pioneer = myAlgorithm.run()
-
-        #print("AVERAGE: ", firstSearchAverage, firstIntervalAverage, backtrackingAverage, secondSearchAverage, secondIntervalAverage, residueAverage)
-        #print("PIONEER: ", firstSearch_pioneer, firstInterval_pioneer, backtracking_pioneer, secondSearch_pioneer, secondInterval_pioneer, residue_pioneer)
-
-        firstSearchAverage_count += firstSearchAverage
-        firstIntervalAverage_count += firstIntervalAverage
-        backtrackingAverage_count += backtrackingAverage
-        secondSearchAverage_count += secondSearchAverage
-        secondIntervalAverage_count += secondIntervalAverage
-        residueAverage_count += residueAverage
-
-        firstSearch_pioneer_count += firstSearch_pioneer
-        firstInterval_pioneer_count += firstInterval_pioneer
-        backtracking_pioneer_count += backtracking_pioneer
-        secondSearch_pioneer_count += secondSearch_pioneer
-        secondInterval_pioneer_count += secondInterval_pioneer
-        residue_pioneer_count += residue_pioneer
-
-        """ tarryGeneralization = TarryGeneralization(m, numOfAgents, colorList, start=None)
-        steps, pionner_steps, fraction, last_steps = tarryGeneralization.run() """
-
-        # Free up memory
-        m._win.destroy()
-
-        steps_array.append(steps / numOfAgents)
-
-        stepsCount += steps
-        pionner_stepsCount += pionner_steps
-        fractionCount += fraction
-
-        # Only for Tarry's algorithm
-        #steps_from_first_to_lastCount += last_steps - pionner_steps
-
-        # Only for my algorithm
-        fraction_pionner_count += fraction_pionner
-
-    # Only for Tarry's algorithm
-    """ averageOfStepsFromFirstToLast = steps_from_first_to_lastCount / iterations
-    steps_from_first_to_last_row.append(averageOfStepsFromFirstToLast)
-    print(numOfAgents, " agents -> average steps from first to last: ", averageOfStepsFromFirstToLast) """
-
-    # Only for my algorithm
-    averageFractionPionner = fraction_pionner_count / iterations
-    fraction_pionner_row.append(averageFractionPionner)
-    print(numOfAgents, " agents -> average of explored fraction until pionner find the goal: ", averageFractionPionner)
-
-    averageOfSteps = stepsCount / numOfAgents / iterations
-    averageOfStepsOfThePionner = pionner_stepsCount / iterations
-    averageOfFraction = fractionCount / iterations
-    stdev = statistics.stdev(steps_array)
-    print(numOfAgents, " agents -> average number of steps: ", averageOfSteps)
-    print(numOfAgents, " agents -> average number of pionner's steps: ", averageOfStepsOfThePionner)
-    print(numOfAgents, " agents -> average of explored fraction: ", averageOfFraction)
-    print(numOfAgents, " agents -> stdev: ", stdev)
-
-    steps_row.append(averageOfSteps)
-    pionner_steps_row.append(averageOfStepsOfThePionner)
-    fraction_row.append(averageOfFraction)
-    stdev_row.append(stdev)
-
-    firstSearchAverage_row.append(firstSearchAverage_count / iterations)
-    firstIntervalAverage_row.append(firstIntervalAverage_count / iterations)
-    backtrackingAverage_row.append(backtrackingAverage_count / iterations)
-    secondSearchAverage_row.append(secondSearchAverage_count / iterations)
-    secondIntervalAverage_row.append(secondIntervalAverage_count / iterations)
-    residueAverage_row.append(residueAverage_count / iterations)
-
-    firstSearch_pioneer_row.append(firstSearch_pioneer_count / iterations)
-    firstInterval_pioneer_row.append(firstInterval_pioneer_count / iterations)
-    backtracking_pioneer_row.append(backtracking_pioneer_count / iterations)
-    secondSearch_pioneer_row.append(secondSearch_pioneer_count / iterations)
-    secondInterval_pioneer_row.append(secondInterval_pioneer_count / iterations)
-    residue_pioneer_row.append(residue_pioneer_count / iterations)
+numOfAgents = 3
 
 
-with open("my_1to40agents_250iterations_10x10_v2_anomaly_4.csv", "w") as f:
-    writer = csv.writer(f)
+# Create a instance of a maze
+m=maze(numOfLines,numOfColumns)
 
-    writer.writerow(header)
-    writer.writerow(steps_row)
-    writer.writerow(pionner_steps_row)
-    writer.writerow(fraction_row)
-    writer.writerow(stdev_row)
+# Create a maze
+#m.CreateMaze(theme='light', loadMaze='mazes/10_by_10/maze_10x10__' + str(j+1) + '.csv')
+#m.CreateMaze(theme='light', loadMaze='testperfect3.csv')
+m.CreateMaze(loopPercent=0,theme='light')
+#m.CreateMaze(loopPercent=0,theme='light', saveMaze=True)
 
-    # Only for Tarry's algorithm
-    #writer.writerow(steps_from_first_to_last_row)
+myAlgorithm = MyAlgorithm(m, numOfAgents, colorList, start=None)
+steps, pionner_steps, fraction, fraction_pionner, firstSearchAverage, firstIntervalAverage, backtrackingAverage, secondSearchAverage, secondIntervalAverage, residueAverage, firstSearch_pioneer, firstInterval_pioneer, backtracking_pioneer, secondSearch_pioneer, secondInterval_pioneer, residue_pioneer = myAlgorithm.run()
 
-    # Only for my algorithm
-    writer.writerow(fraction_pionner_row)
+""" tarryGeneralization = TarryGeneralization(m, numOfAgents, colorList, start=None)
+steps, pionner_steps, fraction, last_steps = tarryGeneralization.run() """
 
-    writer.writerow(firstSearchAverage_row)
-    writer.writerow(firstIntervalAverage_row)
-    writer.writerow(backtrackingAverage_row)
-    writer.writerow(secondSearchAverage_row)
-    writer.writerow(secondIntervalAverage_row)
-    writer.writerow(residueAverage_row)
+        
 
-    writer.writerow(firstSearch_pioneer_row)
-    writer.writerow(firstInterval_pioneer_row)
-    writer.writerow(backtracking_pioneer_row)
-    writer.writerow(secondSearch_pioneer_row)
-    writer.writerow(secondInterval_pioneer_row)
-    writer.writerow(residue_pioneer_row)
-
-
-
-
-
+    
 
 
 
