@@ -35,9 +35,6 @@ class MyAlgorithm:
 
     # Run the algorithm
     def run(self):
-        """ print("MY ALGORITHM - TRABALHO DE GRADUAÇÃO")
-        print("QUANTIDADE DE AGENTES: ", self.numOfAgents)
-        print() """
 
         division = 1.0 / self.numOfAgents
         paths = []
@@ -61,12 +58,6 @@ class MyAlgorithm:
             mySearch, effective_path, explored_cells, foundTheGoal = self.run_single_agent(i)
 
             self.concatenate_new_elements(explored, explored_cells)
-
-            """ print("AGENTE ", i + 1)
-            print("Cor: ", self.getColorString(agentColor))
-            print("Intervalo: ", self.getIntervalString(agentInterval))
-            print("Caminho eficaz pela árvore (representação mixed radix): ", self.getMixedRadixRepresentation(effective_path, self.maze))
-            print() """
 
             a = agent(self.maze,footprints=True,color=agentColor,shape='square',filled=True)
 
@@ -292,10 +283,6 @@ class MyAlgorithm:
             
             rising = 0
 
-            
-            """ if self.firstInterval[agentIndex] != -1 and self.backtracking[agentIndex] == -1:
-                self.backtracking[agentIndex] = stepsCount_anomaly
-                stepsCount_anomaly = 0 """
 
         if self.firstInterval[agentIndex] == -1:
             self.firstInterval[agentIndex] = stepsCount_anomaly
@@ -303,14 +290,6 @@ class MyAlgorithm:
             self.secondInterval[agentIndex] = stepsCount_anomaly
         else:
             self.residue[agentIndex] = stepsCount_anomaly
-        """ elif self.firstInterval[agentIndex] == -1:
-            self.firstInterval[agentIndex] = stepsCount_anomaly
-        elif self.backtracking[agentIndex] == -1:
-            self.backtracking[agentIndex] = stepsCount_anomaly
-        elif self.secondSearch[agentIndex] == -1:
-            self.secondSearch[agentIndex] = stepsCount_anomaly
-        elif self.secondInterval[agentIndex] == -1:
-            self.secondInterval[agentIndex] = stepsCount_anomaly """
 
 
 
